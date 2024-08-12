@@ -14,6 +14,10 @@ export class QuizService {
   showResults = computed(
     () => this.currentQuestionIndex() === this.questions().length - 1
   );
+  currentQuestionAnswers = computed(() => [
+    this.currentQuestion().correctAnswer,
+    ...this.currentQuestion().incorrectAnswers,
+  ]);
   currentQuestion = computed(
     () => this.questions()[this.currentQuestionIndex()]
   );
