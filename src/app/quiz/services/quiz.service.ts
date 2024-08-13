@@ -14,13 +14,27 @@ export class QuizService {
   showResults = computed(
     () => this.currentQuestionIndex() === this.questions().length - 1
   );
-  currentQuestionAnswers = computed(() => [
-    this.currentQuestion().correctAnswer,
-    ...this.currentQuestion().incorrectAnswers,
-  ]);
+  currentQuestionAnswers = computed(() =>
+    this.shuffleAnswers(this.currentQuestion())
+  );
   currentQuestion = computed(
     () => this.questions()[this.currentQuestionIndex()]
   );
+
+  shuffleAnswers(question: QuestionInterface): string[] {
+    const unshuffledAnswers = [
+      question.correctAnswer,
+      ...question.incorrectAnswers,
+    ];
+
+    return unshuffledAnswers
+      .map((a) => ({
+        sort: Math.random(),
+        value: a,
+      }))
+      .sort((a, b) => a.sort - b.sort)
+      .map((a) => a.value);
+  }
 
   restart(): void {
     this.currentQuestionIndex.set(0);
