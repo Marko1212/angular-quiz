@@ -19,6 +19,7 @@ export class QuizService {
 
   currentAnswer = signal<string | null>(null);
   correctAnswersCount = signal<number>(0);
+  error = signal<string | null>(null);
 
   showResults = computed(
     () => this.currentQuestionIndex() === this.questions().length - 1
