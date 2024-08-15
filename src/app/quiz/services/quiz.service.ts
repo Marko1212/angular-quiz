@@ -8,9 +8,14 @@ export class QuizService {
       ? this.currentQuestionIndex()
       : this.currentQuestionIndex() + 1;
     this.currentQuestionIndex.set(currentQuestionIndex);
+    this.currentAnswer.set(null);
   }
   questions = signal<QuestionInterface[]>(this.getMockQuestions());
   currentQuestionIndex = signal<number>(0);
+
+  currentAnswer = signal<string | null>(null);
+  correctAnswersCount = signal<number>(0);
+
   showResults = computed(
     () => this.currentQuestionIndex() === this.questions().length - 1
   );
@@ -34,6 +39,15 @@ export class QuizService {
       }))
       .sort((a, b) => a.sort - b.sort)
       .map((a) => a.value);
+  }
+
+  selectAnswer(answerText: string): void {
+    this.currentAnswer.set(answerText);
+    const correctAnswersCount =
+      answerText === this.currentQuestion().correctAnswer
+        ? this.correctAnswersCount() + 1
+        : this.correctAnswersCount();
+    this.correctAnswersCount.set(correctAnswersCount);
   }
 
   restart(): void {

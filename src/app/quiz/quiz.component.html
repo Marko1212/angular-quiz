@@ -4,7 +4,10 @@
     <div class="congratulations">Congratulations</div>
     <div class="results-info">
       <div>You have completed the quiz.</div>
-      <div>You've got 999 of {{ quizService.questions().length }} right.</div>
+      <div>
+        You've got {{ quizService.correctAnswersCount() }} of
+        {{ quizService.questions().length }} right.
+      </div>
     </div>
     <div class="next-button" (click)="quizService.restart()">Restart</div>
   </div>
@@ -16,9 +19,11 @@
       }}
     </div>
     <quiz-question />
+    @if (quizService.currentAnswer()) {
     <div class="next-button" (click)="quizService.goToNextQuestion()">
       Next question
     </div>
+    }
   </div>
   }
 </div>
