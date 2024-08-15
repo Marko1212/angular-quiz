@@ -1,4 +1,11 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { QuestionComponent } from './components/question/question.component';
 import { QuizService } from './services/quiz.service';
 import { CommonModule } from '@angular/common';
@@ -10,6 +17,12 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [QuestionComponent],
 })
-export class QuizComponent {
+export class QuizComponent implements OnInit {
   quizService = inject(QuizService);
+
+  ngOnInit(): void {
+    this.quizService.getQuestions().subscribe((questions) => {
+      this.quizService.questions.set(questions);
+    });
+  }
 }

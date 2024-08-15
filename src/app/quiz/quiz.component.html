@@ -11,7 +11,7 @@
     </div>
     <div class="next-button" (click)="quizService.restart()">Restart</div>
   </div>
-  } @if (!quizService.showResults()) {
+  } @if (!quizService.showResults() && quizService.questions().length > 0) {
   <div>
     <div class="score">
       Question {{ quizService.currentQuestionIndex() + 1 }}/{{

@@ -1,8 +1,12 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { QuestionInterface } from '../types/question.interface';
+import { map, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { BackendQuestionInterface } from '../types/backendQuestion.interface';
 
 @Injectable({ providedIn: 'root' })
 export class QuizService {
+  http = inject(HttpClient);
   goToNextQuestion() {
     const currentQuestionIndex = this.showResults()
       ? this.currentQuestionIndex()
@@ -10,7 +14,7 @@ export class QuizService {
     this.currentQuestionIndex.set(currentQuestionIndex);
     this.currentAnswer.set(null);
   }
-  questions = signal<QuestionInterface[]>(this.getMockQuestions());
+  questions = signal<QuestionInterface[]>([]);
   currentQuestionIndex = signal<number>(0);
 
   currentAnswer = signal<string | null>(null);
@@ -52,6 +56,31 @@ export class QuizService {
 
   restart(): void {
     this.currentQuestionIndex.set(0);
+  }
+
+  getQuestions(): Observable<QuestionInterface[]> {
+    const apiUrl =
+      'https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple';
+    return this.http.get<{ results: BackendQuestionInterface[] }>(apiUrl).pipe(
+      map((response) => {
+        return this.normalizeQuestions(response.results);
+      })
+    );
+  }
+
+  normalizeQuestions(
+    backendQuestions: BackendQuestionInterface[]
+  ): QuestionInterface[] {
+    return backendQuestions.map((backendQuestion) => {
+      const incorrectAnswers = backendQuestion.incorrect_answers.map(
+        (incorrectAnswer) => decodeURI(incorrectAnswer)
+      );
+      return {
+        question: decodeURI(backendQuestion.question),
+        correctAnswer: decodeURI(backendQuestion.correct_answer),
+        incorrectAnswers,
+      };
+    });
   }
 
   getMockQuestions(): QuestionInterface[] {
