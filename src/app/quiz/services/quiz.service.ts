@@ -72,6 +72,7 @@ export class QuizService {
   normalizeQuestions(
     backendQuestions: BackendQuestionInterface[]
   ): QuestionInterface[] {
+    console.log('test');
     return backendQuestions.map((backendQuestion) => {
       const incorrectAnswers = backendQuestion.incorrect_answers.map(
         (incorrectAnswer) => decodeURI(incorrectAnswer)
