@@ -61,7 +61,7 @@ export class QuizService {
 
   getQuestions(): Observable<QuestionInterface[]> {
     const apiUrl =
-      'https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple';
+      'https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple&encode=url3986';
     return this.http.get<{ results: BackendQuestionInterface[] }>(apiUrl).pipe(
       map((response) => {
         return this.normalizeQuestions(response.results);
@@ -74,11 +74,11 @@ export class QuizService {
   ): QuestionInterface[] {
     return backendQuestions.map((backendQuestion) => {
       const incorrectAnswers = backendQuestion.incorrect_answers.map(
-        (incorrectAnswer) => decodeURI(incorrectAnswer)
+        (incorrectAnswer) => decodeURIComponent(incorrectAnswer)
       );
       return {
-        question: decodeURI(backendQuestion.question),
-        correctAnswer: decodeURI(backendQuestion.correct_answer),
+        question: decodeURIComponent(backendQuestion.question),
+        correctAnswer: decodeURIComponent(backendQuestion.correct_answer),
         incorrectAnswers,
       };
     });
